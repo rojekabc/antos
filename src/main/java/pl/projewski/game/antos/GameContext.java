@@ -23,6 +23,7 @@ public class GameContext {
 
 	IGameGraphic gameGraphic;
 	IGameEngine gameEngine;
+	private final Random random = new Random();
 
 	GameContext(final IGameGraphic gg, final IGameEngine ge) {
 		this.gameGraphic = gg;
@@ -54,9 +55,10 @@ public class GameContext {
 			return;
 		}
 		// check collision (player)
-		final Creature other = gameEngine.getPlayer();
-		if (newx == other.x && newy == other.y) {
-			// TODO: Attack player
+		final Creature player = gameEngine.getPlayer();
+		if (newx == player.x && newy == player.y) {
+			// attack player
+			changeCreatureHealth(player, -1);
 			return;
 		}
 		final Collection<Creature> mobs = gameEngine.getMobs();
@@ -100,43 +102,54 @@ public class GameContext {
 				break;
 			}
 		}
-		if (attackedMob != null) {
+		try {
+			if (attackedMob != null) {
+				// take a heath points
+				final int attackHP = -2 - random.nextInt(3);
+				changeCreatureHealth(attackedMob, attackHP);
+				if (attackedMob.currentHealth > 0) {
+					// don't move. MOB is still alive
+					return;
+				} else {
+					// kill mob, get health and move
+					mobs.remove(attackedMob);
+					changeCreatureHealth(player, 3);
+				}
+			}
+			// move graphic
+			gameGraphic.moveCreature(player, newx, newy);
+			// make move
+			player.x = newx;
+			player.y = newy;
+		} finally {
 
-			// for now - just kill mob and append life (eat mob)
-			// TODO: attack mob
-			mobs.remove(attackedMob);
-			changePlayerHealth(+5);
-		} else {
-			// change health
-			changePlayerHealth(-1);
+			// next ture
+			// TODO: Tick or on player move - configuration
+			nextTure();
 		}
-		// move graphic
-		gameGraphic.moveCreature(player, newx, newy);
-		// make move
-		player.x = newx;
-		player.y = newy;
-
-		// next ture
-		// TODO: Tick or on player move - configuration
-		nextTure();
 	}
 
-	public void changePlayerHealth(final int dh) {
+	public void changeCreatureHealth(final Creature creature, int dh) {
+		if (creature.currentHealth + dh > creature.healthPoints) {
+			dh = creature.healthPoints - creature.currentHealth;
+		}
+		creature.currentHealth += dh;
 		final Creature player = gameEngine.getPlayer();
-		if (player.currentHealth + dh > player.healthPoints) {
-			player.currentHealth = player.healthPoints;
+		if (creature == player) {
+			// healh bar graphic
+			gameGraphic.updateHealth();
+			log.info("Player get " + dh + " HP");
 		} else {
-			player.currentHealth += dh;
+			log.info("MOB get " + dh + " HP");
 		}
-		// healh bar graphic
-		gameGraphic.updateHealth();
 		// die
-		if (player.currentHealth <= 0) {
-			player.image = AntosResources.getInstance().getRIPImage();
-			// die graphic
-			gameGraphic.playerDie();
+		if (creature.currentHealth <= 0) {
+			if (creature == player) {
+				player.image = AntosResources.getInstance().getRIPImage();
+				// die graphic
+				gameGraphic.playerDie();
+			}
 		}
-
 	}
 
 	public Collection<Creature> getMobs() {
