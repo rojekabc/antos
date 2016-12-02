@@ -19,16 +19,29 @@ import pl.projewski.game.antos.AntosResources;
 public class World {
 
 	public Player player;
-	public Element[] map;
+	private final Element[] map;
 	public Collection<Creature> mobs;
 	private final static Random randomizer = new Random();
 
+	public final Element getElement(final int x, final int y) {
+		return map[x + y * AntosProperties.GRID_WIDTH];
+	}
+
+	public final <T extends Element> T get(final Class<T> c, final int x, final int y) {
+		final Element e = map[x + y * AntosProperties.GRID_WIDTH];
+		if (e == null) {
+			return null;
+		} else {
+			return c.cast(e);
+		}
+	}
+
 	public final boolean isAnyCollision(final int x, final int y) {
-		return map[x + y * AntosProperties.GRID_WIDTH] != null;
+		return getElement(x, y) != null;
 	}
 
 	public final boolean isBlockCollision(final int x, final int y) {
-		final Element element = map[x + y * AntosProperties.GRID_WIDTH];
+		final Element element = getElement(x, y);
 		if (element != null) {
 			return !(element instanceof Creature);
 		}
@@ -47,11 +60,19 @@ public class World {
 		return false;
 	}
 
-	void putElement(final Element e) {
-		if (map[e.x + e.y * AntosProperties.GRID_WIDTH] != null) {
+	void set(final Element e, final int x, final int y) {
+		map[x + y * AntosProperties.GRID_WIDTH] = e;
+	}
+
+	public void removeElement(final Element e) {
+		set(null, e.x, e.y);
+	}
+
+	public void putElement(final Element e) {
+		if (getElement(e.x, e.y) != null) {
 			throw new IllegalStateException();
 		}
-		map[e.x + e.y * AntosProperties.GRID_WIDTH] = e;
+		set(e, e.x, e.y);
 	}
 
 	public World() {

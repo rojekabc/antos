@@ -54,77 +54,50 @@ public class GameContext {
 			// cannot move
 			return;
 		}
-		// check collision (player)
-		final Creature player = gameEngine.getPlayer();
-		if (newx == player.x && newy == player.y) {
-			// attack player
-			changeCreatureHealth(player, -1);
-			return;
-		}
-		final Collection<Creature> mobs = gameEngine.getMobs();
-		for (final Creature mob : mobs) {
-			if (newx == mob.x && newy == mob.y) {
+		// check collision (creature)
+		final Creature collisionCreature = getWorld().get(Creature.class, newx, newy);
+		if (collisionCreature != null) {
+			final Creature player = gameEngine.getPlayer();
+			if (creature == player) {
+				// player attack MOB
+				final int attackHP = -2 - random.nextInt(3);
+				changeCreatureHealth(collisionCreature, attackHP);
+				if (collisionCreature.currentHealth > 0) {
+					// don't move. MOB is still alive
+					return;
+				} else {
+					// kill mob, get health and move
+					getWorld().mobs.remove(collisionCreature);
+					getWorld().removeElement(collisionCreature);
+					changeCreatureHealth(player, 3);
+				}
+			} else if (collisionCreature == player) {
+				// MOB attack player
+				changeCreatureHealth(player, -1);
+				return;
+			} else {
+				// MOB try to move on another MOB place
 				return;
 			}
 		}
 		// move graphic
 		gameGraphic.moveCreature(creature, newx, newy);
 		// make move
+		getWorld().removeElement(creature);
 		creature.x = newx;
 		creature.y = newy;
-
+		getWorld().putElement(creature);
 	}
 
 	public void movePlayer(final int dx, final int dy) {
-		final Creature player = gameEngine.getPlayer();
-		// is dead
-		if (player.currentHealth <= 0) {
-			return;
-		}
-		final int newx = player.x + dx;
-		final int newy = player.y + dy;
-		// is overboarded
-		if (newx < 0 || newx >= AntosProperties.GRID_WIDTH || newy < 0 || newy >= AntosProperties.GRID_HEIGHT) {
-			return;
-		}
-		// check collisions
-		// - colisions with any non-life block
-		if (getWorld().isBlockCollision(newx, newy)) {
-			// cannot move
-			return;
-		}
-		// - colisions with mobs
-		Creature attackedMob = null;
-		final Collection<Creature> mobs = gameEngine.getMobs();
-		for (final Creature mob : mobs) {
-			if (newx == mob.x && newy == mob.y) {
-				attackedMob = mob;
-				break;
-			}
-		}
 		try {
-			if (attackedMob != null) {
-				// take a heath points
-				final int attackHP = -2 - random.nextInt(3);
-				changeCreatureHealth(attackedMob, attackHP);
-				if (attackedMob.currentHealth > 0) {
-					// don't move. MOB is still alive
-					return;
-				} else {
-					// kill mob, get health and move
-					mobs.remove(attackedMob);
-					changeCreatureHealth(player, 3);
-				}
+			final Creature player = gameEngine.getPlayer();
+			// is dead
+			if (player.currentHealth <= 0) {
+				return;
 			}
-			// move graphic
-			gameGraphic.moveCreature(player, newx, newy);
-			// make move
-			player.x = newx;
-			player.y = newy;
+			moveCreature(player, dx, dy);
 		} finally {
-
-			// next ture
-			// TODO: Tick or on player move - configuration
 			nextTure();
 		}
 	}

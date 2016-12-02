@@ -88,7 +88,7 @@ class GamePanel extends JPanel implements KeyListener {
 		final World world = context.getWorld();
 		for (int j = 0; j < AntosProperties.GRID_HEIGHT; j++) {
 			for (int i = 0; i < AntosProperties.GRID_WIDTH; i++) {
-				final Element e = world.map[i + j * AntosProperties.GRID_WIDTH];
+				final Element e = world.getElement(i, j);
 				if (e != null) {
 					g.drawImage(e.image, e.x * AntosProperties.CELL_WIDTH, e.y * AntosProperties.CELL_HEIGHT, this);
 				}
