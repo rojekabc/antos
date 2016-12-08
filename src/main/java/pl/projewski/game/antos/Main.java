@@ -5,6 +5,7 @@
  */
 package pl.projewski.game.antos;
 
+import pl.projewski.game.antos.configuration.GameConfiguration;
 import pl.projewski.game.antos.gameengine.GameEngineFactory;
 import pl.projewski.game.antos.gameengine.IGameEngine;
 import pl.projewski.game.antos.gamegraphic.components.GameGraphicFactory;
@@ -16,18 +17,20 @@ import pl.projewski.game.antos.gamegraphic.components.IGameGraphic;
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        AntosConfiguration.getInstance();
-        AntosResources.getInstance();
+	/**
+	 * @param args
+	 *            the command line arguments
+	 */
+	public static void main(final String[] args) {
+		AntosConfiguration.getInstance();
+		AntosResources.getInstance();
+		GameConfiguration.getInstance();
 
-        IGameEngine gameEngine = GameEngineFactory.getGameEngine();
-        IGameGraphic gameGraphic = GameGraphicFactory.getGameGraphic();
-        GameContext context = new GameContext(gameGraphic, gameEngine);
-        gameEngine.createWorld();
-        gameGraphic.startMainFrame(context);
-    }
+		final IGameEngine gameEngine = GameEngineFactory.getGameEngine();
+		final IGameGraphic gameGraphic = GameGraphicFactory.getGameGraphic();
+		final GameContext context = new GameContext(gameGraphic, gameEngine);
+		gameEngine.createWorld();
+		gameGraphic.startMainFrame(context);
+	}
 
 }

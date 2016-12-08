@@ -9,8 +9,10 @@ import java.util.Collection;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
+import pl.projewski.game.antos.configuration.EBlock;
 import pl.projewski.game.antos.gameengine.IGameEngine;
 import pl.projewski.game.antos.gameengine.elements.Creature;
+import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.World;
 import pl.projewski.game.antos.gamegraphic.components.IGameGraphic;
 
@@ -62,15 +64,11 @@ public class GameContext {
 				// player attack MOB
 				final int attackHP = -2 - random.nextInt(3);
 				changeCreatureHealth(collisionCreature, attackHP);
-				if (collisionCreature.currentHealth > 0) {
-					// don't move. MOB is still alive
-					return;
-				} else {
-					// kill mob, get health and move
-					getWorld().mobs.remove(collisionCreature);
-					getWorld().removeElement(collisionCreature);
+				if (collisionCreature.currentHealth <= 0) {
+					// kill mob, get health
 					changeCreatureHealth(player, 3);
 				}
+				return;
 			} else if (collisionCreature == player) {
 				// MOB attack player
 				changeCreatureHealth(player, -1);
@@ -103,8 +101,8 @@ public class GameContext {
 	}
 
 	public void changeCreatureHealth(final Creature creature, int dh) {
-		if (creature.currentHealth + dh > creature.healthPoints) {
-			dh = creature.healthPoints - creature.currentHealth;
+		if (creature.currentHealth + dh > creature.type.getHp()) {
+			dh = creature.type.getHp() - creature.currentHealth;
 		}
 		creature.currentHealth += dh;
 		final Creature player = gameEngine.getPlayer();
@@ -117,11 +115,23 @@ public class GameContext {
 		}
 		// die
 		if (creature.currentHealth <= 0) {
-			if (creature == player) {
-				player.image = AntosResources.getInstance().getRIPImage();
-				// die graphic
-				gameGraphic.playerDie();
+			// remove from world
+			getWorld().mobs.remove(creature);
+			getWorld().removeElement(creature);
+			// place RIP block if available
+			final String ripBlockName = creature.type.getRipBlockName();
+			if (ripBlockName != null) {
+				final EBlock ripBlock = EBlock.valueOf(ripBlockName);
+				// this is because of moving action, which may replace drawn
+				// image of RIP
+				// FIXME: action die after move
+				// FIXME: sometimes MOB after die not disapear
+				creature.image = AntosResources.getInstance().loadImage(ripBlock.getImageResource());
+				getWorld().putElement(new Element(creature.x, creature.y,
+						AntosResources.getInstance().loadImage(ripBlock.getImageResource())));
 			}
+			// die graphic
+			gameGraphic.creatureDie(creature);
 		}
 	}
 

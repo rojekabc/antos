@@ -5,12 +5,15 @@
  */
 package pl.projewski.game.antos.gameengine.elements;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
 import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.AntosResources;
+import pl.projewski.game.antos.configuration.EBlock;
+import pl.projewski.game.antos.configuration.ECreature;
 
 /**
  *
@@ -79,18 +82,17 @@ public class World {
 		// create map object
 		map = new Element[AntosProperties.GRID_WIDTH * AntosProperties.GRID_HEIGHT];
 		// draw block round
+		final BufferedImage simpleImage = AntosResources.getInstance().loadImage(EBlock.SIMPLE.getImageResource());
 		for (int i = 0; i < AntosProperties.GRID_WIDTH; i++) {
-			putElement(new Element(i, 0, AntosResources.getInstance().getSimpleBlockImage()));
-			putElement(new Element(i, AntosProperties.GRID_HEIGHT - 1,
-					AntosResources.getInstance().getSimpleBlockImage()));
+			putElement(new Element(i, 0, simpleImage));
+			putElement(new Element(i, AntosProperties.GRID_HEIGHT - 1, simpleImage));
 		}
 		for (int i = 1; i < AntosProperties.GRID_HEIGHT - 1; i++) {
-			putElement(new Element(0, i, AntosResources.getInstance().getSimpleBlockImage()));
-			putElement(
-					new Element(AntosProperties.GRID_WIDTH - 1, i, AntosResources.getInstance().getSimpleBlockImage()));
+			putElement(new Element(0, i, simpleImage));
+			putElement(new Element(AntosProperties.GRID_WIDTH - 1, i, simpleImage));
 		}
 		// put player
-		player = new Player(1, 1, AntosResources.getInstance().getKnightImage(), AntosProperties.PLAYER_HEALTH);
+		player = new Player(1, 1);
 		putElement(player);
 		// put mobs
 		final int numOfMobs = randomizer.nextInt(AntosProperties.MAX_ADD_MOB_AMMOUT) + AntosProperties.MIN_MOB_AMMOUNT;
@@ -102,7 +104,7 @@ public class World {
 				y = randomizer.nextInt(AntosProperties.GRID_HEIGHT);
 			} while (isAnyCollision(x, y));
 
-			final Creature mob = new Creature(x, y, AntosResources.getInstance().getGhostImage(), 10);
+			final Creature mob = new Creature(ECreature.GHOST, x, y);
 			putElement(mob);
 			mobs.add(mob);
 		}

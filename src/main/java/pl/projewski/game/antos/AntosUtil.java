@@ -10,10 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import pl.projewski.game.antos.util.PropertiesWrapper;
 
 /**
@@ -23,45 +21,45 @@ import pl.projewski.game.antos.util.PropertiesWrapper;
 @Slf4j
 public class AntosUtil {
 
-    public static InputStream getStreamToResource(final String filename) {
-        InputStream is = null;
-        // check as file
-        File file = new File(filename);
-        if (file.exists()) {
-            log.info("Find [" + filename + "] as file");
-            try {
-                is = new FileInputStream(file);
-            } catch (FileNotFoundException ex) {
-                log.warn("Fail loading file [" + filename + "]", ex);
-            }
-        }
-        // check as resource
-        if (is == null) {
-            is = AntosConfiguration.class.getClassLoader().getResourceAsStream(filename);
-            if (is != null) {
-                log.info("Find [" + filename + "] as resource");
-            }
-        }
-        return is;
-    }
+	public static InputStream getStreamToResource(final String filename) {
+		InputStream is = null;
+		// check as file
+		final File file = new File(filename);
+		if (file.exists()) {
+			log.info("Find [" + filename + "] as file");
+			try {
+				is = new FileInputStream(file);
+			} catch (final FileNotFoundException ex) {
+				log.warn("Fail loading file [" + filename + "]", ex);
+			}
+		}
+		// check as resource
+		if (is == null) {
+			is = AntosConfiguration.class.getClassLoader().getResourceAsStream(filename);
+			if (is != null) {
+				log.info("Find [" + filename + "] as resource");
+			}
+		}
+		return is;
+	}
 
-    public static PropertiesWrapper loadPropertiesFromFileOrResource(String propertiesFilename) {
-        InputStream is = getStreamToResource(propertiesFilename);
+	public static PropertiesWrapper loadPropertiesFromFileOrResource(final String propertiesFilename) {
+		final InputStream is = getStreamToResource(propertiesFilename);
 
-        // load configuration
-        PropertiesWrapper props = null;
-        if (is == null) {
-            log.info("Configuration [" + propertiesFilename + "] not found");
-        } else {
-            try {
-                props = new PropertiesWrapper();
-                props.load(is);
-            } catch (IOException ex) {
-                log.warn("Fail loading properties for [" + propertiesFilename + "]", ex);
-                props = null;
-            }
-        }
+		// load configuration
+		PropertiesWrapper props = null;
+		if (is == null) {
+			log.info("Configuration [" + propertiesFilename + "] not found");
+		} else {
+			try {
+				props = new PropertiesWrapper();
+				props.load(is);
+			} catch (final IOException ex) {
+				log.warn("Fail loading properties for [" + propertiesFilename + "]", ex);
+				props = null;
+			}
+		}
 
-        return props;
-    }
+		return props;
+	}
 }

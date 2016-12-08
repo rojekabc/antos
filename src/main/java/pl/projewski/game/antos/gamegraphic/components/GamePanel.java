@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.AntosResources;
 import pl.projewski.game.antos.GameContext;
+import pl.projewski.game.antos.configuration.GameConfiguration;
 import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.World;
@@ -60,8 +61,11 @@ class GamePanel extends JPanel implements KeyListener {
 		super.paint(g); // To change body of generated methods, choose Tools |
 						// Templates.
 		// paint image background
-		if (AntosProperties.PAINT_BACKGROUND) {
-			g.drawImage(AntosResources.getInstance().getMainBackgroundImage(), 0, 0, this);
+		final BufferedImage background = AntosResources.getInstance()
+				.loadImage(GameConfiguration.getInstance().getBackgroundImage());
+
+		if (background != null) {
+			g.drawImage(background, 0, 0, this);
 			// } else {
 			// g.setColor(AntosProperties.GAMEPANEL_BACKGROUND);
 		}
@@ -71,7 +75,7 @@ class GamePanel extends JPanel implements KeyListener {
 		 * AntosProperties.CELL_HEIGHT);
 		 */
 		// paint grid lines
-		if (AntosProperties.PAINT_GRID_LINES) {
+		if (GameConfiguration.getInstance().isPaintGridLines()) {
 			g.setColor(Color.lightGray);
 			for (int i = 0; i <= AntosProperties.GRID_WIDTH; i++) {
 				g.drawLine(i * AntosProperties.CELL_WIDTH, 0, i * AntosProperties.CELL_WIDTH,
@@ -135,15 +139,16 @@ class GamePanel extends JPanel implements KeyListener {
 	public void keyReleased(final KeyEvent ke) {
 	}
 
-	void playerDie(final Graphics graphics) {
-		log.info("graphic - Player die");
-		final Creature player = context.getPlayerCreature();
-		final int panelx = player.x * AntosProperties.CELL_WIDTH;
-		final int panely = player.y * AntosProperties.CELL_HEIGHT;
-		if (AntosProperties.PAINT_BACKGROUND) {
+	void creatureDie(final Graphics graphics, final Creature creature) {
+		log.info("graphic - Creature die");
+		final int panelx = creature.x * AntosProperties.CELL_WIDTH;
+		final int panely = creature.y * AntosProperties.CELL_HEIGHT;
+		final BufferedImage background = AntosResources.getInstance()
+				.loadImage(GameConfiguration.getInstance().getBackgroundImage());
+		if (background != null) {
 			try {
-				final BufferedImage backImage = AntosResources.getInstance().getMainBackgroundImage()
-						.getSubimage(panelx, panely, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
+				final BufferedImage backImage = background.getSubimage(panelx, panely, AntosProperties.CELL_WIDTH,
+						AntosProperties.CELL_HEIGHT);
 				graphics.drawImage(backImage, panelx, panely, this);
 			} catch (final RasterFormatException e) {
 				// TODO: Change to more check, before take image
@@ -152,11 +157,15 @@ class GamePanel extends JPanel implements KeyListener {
 			graphics.setColor(AntosProperties.GAMEPANEL_BACKGROUND);
 			graphics.fillRect(panelx, panely, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 		}
-		if (AntosProperties.PAINT_GRID_LINES) {
+		if (GameConfiguration.getInstance().isPaintGridLines()) {
 			graphics.setColor(Color.lightGray);
 			graphics.drawRect(panelx, panely, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 		}
-		graphics.drawImage(player.image, panelx, panely, this);
+		// is replaced by any die graphic
+		final Element element = context.getWorld().getElement(creature.x, creature.y);
+		if (element != null) {
+			graphics.drawImage(element.image, panelx, panely, this);
+		}
 	}
 
 }

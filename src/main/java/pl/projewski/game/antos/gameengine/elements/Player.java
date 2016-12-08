@@ -5,7 +5,7 @@
  */
 package pl.projewski.game.antos.gameengine.elements;
 
-import java.awt.image.BufferedImage;
+import pl.projewski.game.antos.configuration.ECreature;
 
 /**
  *
@@ -13,8 +13,8 @@ import java.awt.image.BufferedImage;
  */
 public class Player extends Creature {
 
-    public Player(int x, int y, BufferedImage image, int healthPoints) {
-        super(x, y, image, healthPoints);
-    }
+	public Player(final int x, final int y) {
+		super(ECreature.PLAYER, x, y);
+	}
 
 }

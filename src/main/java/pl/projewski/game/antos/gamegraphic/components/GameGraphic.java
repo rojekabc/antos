@@ -77,11 +77,11 @@ public class GameGraphic implements IGameGraphic {
 	}
 
 	@Override
-	public void playerDie() {
+	public void creatureDie(final Creature creature) {
 		synchronized (bufferStrategy) {
 			// do all actions
 			final Graphics graphics = bufferStrategy.getDrawGraphics();
-			this.gamePanel.playerDie(graphics);
+			this.gamePanel.creatureDie(graphics, creature);
 			graphics.dispose();
 			bufferStrategy.show();
 			Toolkit.getDefaultToolkit().sync();

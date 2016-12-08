@@ -5,20 +5,21 @@
  */
 package pl.projewski.game.antos.gameengine.elements;
 
-import java.awt.image.BufferedImage;
+import pl.projewski.game.antos.AntosResources;
+import pl.projewski.game.antos.configuration.ECreature;
 
 /**
  *
  * @author WRO00541
  */
 public class Creature extends Element {
-	public int healthPoints;
+	public ECreature type;
 	public int currentHealth;
 
-	public Creature(final int x, final int y, final BufferedImage image, final int healthPoints) {
-		super(x, y, image);
-		this.healthPoints = healthPoints;
-		this.currentHealth = healthPoints;
+	public Creature(final ECreature creatureType, final int x, final int y) {
+		super(x, y, AntosResources.getInstance().loadImage(creatureType.getImageResource()));
+		this.type = creatureType;
+		this.currentHealth = creatureType.getHp();
 	}
 
 }

@@ -13,6 +13,7 @@ import java.awt.image.RasterFormatException;
 
 import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.AntosResources;
+import pl.projewski.game.antos.configuration.GameConfiguration;
 import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gamegraphic.components.IGameGraphic;
 
@@ -38,7 +39,7 @@ public class MoveCreatureAction extends GameGraphicActionAbstract {
 		this.newy = newy;
 		this.oldx = oldx;
 		this.oldy = oldy;
-		if (AntosProperties.MOVE_SLIDE) {
+		if (GameConfiguration.getInstance().isMoveSlide()) {
 			steps = 8;
 		} else {
 			steps = 1;
@@ -58,20 +59,20 @@ public class MoveCreatureAction extends GameGraphicActionAbstract {
 		} else {
 			movey = 0;
 		}
-		if (AntosProperties.PAINT_BACKGROUND) {
+		final BufferedImage background = AntosResources.getInstance()
+				.loadImage(GameConfiguration.getInstance().getBackgroundImage());
+		if (background != null) {
 			// TODO: Check that subimage is in bound of background image or
 			// create on start correctly sized background image
 			try {
-				oldSubImage = AntosResources.getInstance().getMainBackgroundImage().getSubimage(
-						oldx * AntosProperties.CELL_WIDTH, oldy * AntosProperties.CELL_HEIGHT,
-						AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
+				oldSubImage = background.getSubimage(oldx * AntosProperties.CELL_WIDTH,
+						oldy * AntosProperties.CELL_HEIGHT, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 			} catch (final RasterFormatException e) {
 				oldSubImage = null;
 			}
 			try {
-				newSubImage = AntosResources.getInstance().getMainBackgroundImage().getSubimage(
-						newx * AntosProperties.CELL_WIDTH, newy * AntosProperties.CELL_HEIGHT,
-						AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
+				newSubImage = background.getSubimage(newx * AntosProperties.CELL_WIDTH,
+						newy * AntosProperties.CELL_HEIGHT, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 			} catch (final RasterFormatException e) {
 				newSubImage = null;
 			}
@@ -83,14 +84,14 @@ public class MoveCreatureAction extends GameGraphicActionAbstract {
 		// clear current and next cell
 		graphics.setColor(AntosProperties.GAMEPANEL_BACKGROUND);
 
-		if (AntosProperties.PAINT_BACKGROUND && oldSubImage != null) {
+		if (oldSubImage != null) {
 			graphics.drawImage(oldSubImage, oldx * AntosProperties.CELL_WIDTH, oldy * AntosProperties.CELL_HEIGHT,
 					observer);
 		} else {
 			graphics.fillRect(oldx * AntosProperties.CELL_WIDTH, oldy * AntosProperties.CELL_HEIGHT,
 					AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 		}
-		if (AntosProperties.PAINT_BACKGROUND && newSubImage != null) {
+		if (newSubImage != null) {
 			graphics.drawImage(newSubImage, newx * AntosProperties.CELL_WIDTH, newy * AntosProperties.CELL_HEIGHT,
 					observer);
 		} else {
@@ -98,7 +99,7 @@ public class MoveCreatureAction extends GameGraphicActionAbstract {
 					AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 		}
 		// redraw grid lines
-		if (AntosProperties.PAINT_GRID_LINES) {
+		if (GameConfiguration.getInstance().isPaintGridLines()) {
 			graphics.setColor(Color.lightGray);
 			graphics.drawRect(oldx * AntosProperties.CELL_WIDTH, oldy * AntosProperties.CELL_HEIGHT,
 					AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
