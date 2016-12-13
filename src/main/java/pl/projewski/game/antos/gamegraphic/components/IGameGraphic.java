@@ -9,6 +9,7 @@ import java.awt.image.BufferStrategy;
 
 import pl.projewski.game.antos.GameContext;
 import pl.projewski.game.antos.gameengine.elements.Creature;
+import pl.projewski.game.antos.gameengine.elements.World;
 
 /**
  *
@@ -28,5 +29,6 @@ public interface IGameGraphic {
 
 	public void moveCreature(Creature creature, int newx, int newy);
 
-	void creatureDie(Creature creature);
+	void creatureDie(Creature creature, World world);
+
 }

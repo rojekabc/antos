@@ -8,7 +8,6 @@ package pl.projewski.game.antos.gamegraphic.actions;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.awt.image.RasterFormatException;
 
 import pl.projewski.game.antos.AntosProperties;
@@ -21,20 +20,17 @@ import pl.projewski.game.antos.gamegraphic.components.IGameGraphic;
  *
  * @author piotr.rojewski
  */
-public class MoveCreatureAction extends GameGraphicActionAbstract {
+public class MoveCreatureAction extends CreatureActionAbstract {
 
 	private final int newx, newy, oldx, oldy;
-	private final Creature creature;
 	private int movex, movey;
 	private int step, steps;
 	BufferedImage oldSubImage = null;
 	BufferedImage newSubImage = null;
-	ImageObserver observer = null;
 
-	public MoveCreatureAction(final ImageObserver observer, final IGameGraphic gameGraphic, final Creature creature,
-			final int oldx, final int oldy, final int newx, final int newy) {
-		super(gameGraphic);
-		this.creature = creature;
+	public MoveCreatureAction(final IGameGraphic gameGraphic, final Creature creature, final int oldx, final int oldy,
+			final int newx, final int newy) {
+		super(gameGraphic, creature);
 		this.newx = newx;
 		this.newy = newy;
 		this.oldx = oldx;
@@ -86,14 +82,14 @@ public class MoveCreatureAction extends GameGraphicActionAbstract {
 
 		if (oldSubImage != null) {
 			graphics.drawImage(oldSubImage, oldx * AntosProperties.CELL_WIDTH, oldy * AntosProperties.CELL_HEIGHT,
-					observer);
+					null);
 		} else {
 			graphics.fillRect(oldx * AntosProperties.CELL_WIDTH, oldy * AntosProperties.CELL_HEIGHT,
 					AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
 		}
 		if (newSubImage != null) {
 			graphics.drawImage(newSubImage, newx * AntosProperties.CELL_WIDTH, newy * AntosProperties.CELL_HEIGHT,
-					observer);
+					null);
 		} else {
 			graphics.fillRect(newx * AntosProperties.CELL_WIDTH, newy * AntosProperties.CELL_HEIGHT,
 					AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
@@ -108,7 +104,7 @@ public class MoveCreatureAction extends GameGraphicActionAbstract {
 		}
 		// draw image
 		graphics.drawImage(creature.image, oldx * AntosProperties.CELL_WIDTH + step * movex,
-				oldy * AntosProperties.CELL_HEIGHT + step * movey, observer);
+				oldy * AntosProperties.CELL_HEIGHT + step * movey, null);
 		step++;
 		return step <= steps;
 	}

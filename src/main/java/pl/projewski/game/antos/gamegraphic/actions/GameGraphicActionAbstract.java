@@ -13,10 +13,10 @@ import pl.projewski.game.antos.gamegraphic.components.IGameGraphic;
  */
 public abstract class GameGraphicActionAbstract implements IGameGraphicAction {
 
-    IGameGraphic gameGraphic;
+	protected final IGameGraphic gameGraphic;
 
-    GameGraphicActionAbstract(IGameGraphic gameGraphic) {
-        this.gameGraphic = gameGraphic;
-    }
+	protected GameGraphicActionAbstract(final IGameGraphic gameGraphic) {
+		this.gameGraphic = gameGraphic;
+	}
 
 }

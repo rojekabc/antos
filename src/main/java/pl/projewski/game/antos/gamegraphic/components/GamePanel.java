@@ -10,7 +10,6 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 
 import javax.swing.JPanel;
 
@@ -19,7 +18,6 @@ import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.AntosResources;
 import pl.projewski.game.antos.GameContext;
 import pl.projewski.game.antos.configuration.GameConfiguration;
-import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.World;
 
@@ -137,35 +135,6 @@ class GamePanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyReleased(final KeyEvent ke) {
-	}
-
-	void creatureDie(final Graphics graphics, final Creature creature) {
-		log.info("graphic - Creature die");
-		final int panelx = creature.x * AntosProperties.CELL_WIDTH;
-		final int panely = creature.y * AntosProperties.CELL_HEIGHT;
-		final BufferedImage background = AntosResources.getInstance()
-				.loadImage(GameConfiguration.getInstance().getBackgroundImage());
-		if (background != null) {
-			try {
-				final BufferedImage backImage = background.getSubimage(panelx, panely, AntosProperties.CELL_WIDTH,
-						AntosProperties.CELL_HEIGHT);
-				graphics.drawImage(backImage, panelx, panely, this);
-			} catch (final RasterFormatException e) {
-				// TODO: Change to more check, before take image
-			}
-		} else {
-			graphics.setColor(AntosProperties.GAMEPANEL_BACKGROUND);
-			graphics.fillRect(panelx, panely, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
-		}
-		if (GameConfiguration.getInstance().isPaintGridLines()) {
-			graphics.setColor(Color.lightGray);
-			graphics.drawRect(panelx, panely, AntosProperties.CELL_WIDTH, AntosProperties.CELL_HEIGHT);
-		}
-		// is replaced by any die graphic
-		final Element element = context.getWorld().getElement(creature.x, creature.y);
-		if (element != null) {
-			graphics.drawImage(element.image, panelx, panely, this);
-		}
 	}
 
 }

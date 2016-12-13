@@ -9,10 +9,8 @@ import java.util.Collection;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.projewski.game.antos.configuration.EBlock;
 import pl.projewski.game.antos.gameengine.IGameEngine;
 import pl.projewski.game.antos.gameengine.elements.Creature;
-import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.World;
 import pl.projewski.game.antos.gamegraphic.components.IGameGraphic;
 
@@ -115,23 +113,9 @@ public class GameContext {
 		}
 		// die
 		if (creature.currentHealth <= 0) {
-			// remove from world
-			getWorld().mobs.remove(creature);
-			getWorld().removeElement(creature);
-			// place RIP block if available
-			final String ripBlockName = creature.type.getRipBlockName();
-			if (ripBlockName != null) {
-				final EBlock ripBlock = EBlock.valueOf(ripBlockName);
-				// this is because of moving action, which may replace drawn
-				// image of RIP
-				// FIXME: action die after move
-				// FIXME: sometimes MOB after die not disapear
-				creature.image = AntosResources.getInstance().loadImage(ripBlock.getImageResource());
-				getWorld().putElement(new Element(creature.x, creature.y,
-						AntosResources.getInstance().loadImage(ripBlock.getImageResource())));
-			}
 			// die graphic
-			gameGraphic.creatureDie(creature);
+			getWorld().mobs.remove(creature);
+			gameGraphic.creatureDie(creature, getWorld());
 		}
 	}
 
@@ -149,8 +133,6 @@ public class GameContext {
 		final Collection<Creature> mobs = getMobs();
 		final Random random = new Random();
 		for (final Creature creature : mobs) {
-			// TODO: Currently move of mob is totally random - do depened on
-			// type and with more strategy (target)
 			final int move = random.nextInt(4);
 			switch (move) {
 			case 0:
