@@ -30,7 +30,8 @@ class GamePanel extends JPanel implements KeyListener {
 
 	GameContext context;
 	private final HealthBar healthBar;
-	private boolean keyPressed = false;
+	private int keyPressed = 0;
+	private int keyLast = 0;
 
 	GamePanel(final GameContext context) {
 		setSize(AntosProperties.APP_WIDTH, AntosProperties.APP_HEIGHT);
@@ -105,11 +106,12 @@ class GamePanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyPressed(final KeyEvent ke) {
-		if (keyPressed) {
+		final int kc = ke.getKeyCode();
+		if (keyPressed != 0 && kc == keyLast) {
 			return;
 		}
-		keyPressed = true;
-		final int kc = ke.getKeyCode();
+		keyPressed++;
+		keyLast = kc;
 		switch (kc) {
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_W:
@@ -140,7 +142,7 @@ class GamePanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyReleased(final KeyEvent ke) {
-		keyPressed = false;
+		keyPressed--;
 	}
 
 }
