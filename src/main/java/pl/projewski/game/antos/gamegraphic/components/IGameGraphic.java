@@ -31,4 +31,6 @@ public interface IGameGraphic {
 
 	void creatureDie(Creature creature, World world);
 
+	void changeCreatureHealth(final Creature creature, final int healthChange);
+
 }

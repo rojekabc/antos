@@ -61,14 +61,17 @@ public class GameContext {
 			if (creature == player) {
 				// player attack MOB
 				final int attackHP = -2 - random.nextInt(3);
+				gameGraphic.changeCreatureHealth(collisionCreature, attackHP);
 				changeCreatureHealth(collisionCreature, attackHP);
 				if (collisionCreature.currentHealth <= 0) {
 					// kill mob, get health
+					gameGraphic.changeCreatureHealth(player, 3);
 					changeCreatureHealth(player, 3);
 				}
 				return;
 			} else if (collisionCreature == player) {
 				// MOB attack player
+				gameGraphic.changeCreatureHealth(player, -1);
 				changeCreatureHealth(player, -1);
 				return;
 			} else {

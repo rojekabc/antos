@@ -24,6 +24,7 @@ import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.World;
 import pl.projewski.game.antos.gamegraphic.actions.CreatureActionAbstract;
 import pl.projewski.game.antos.gamegraphic.actions.DieCreatureAction;
+import pl.projewski.game.antos.gamegraphic.actions.HealthChangeAction;
 import pl.projewski.game.antos.gamegraphic.actions.MoveCreatureAction;
 
 /**
@@ -86,6 +87,10 @@ public class GameGraphic implements IGameGraphic {
 	@Override
 	public void creatureDie(final Creature creature, final World world) {
 		registerGraphicAction(new DieCreatureAction(this, creature, world));
+	}
+
+	public void changeCreatureHealth(final Creature creature, final int healthChange) {
+		registerGraphicAction(new HealthChangeAction(this, creature, healthChange));
 	}
 
 	private void registerGraphicAction(final CreatureActionAbstract action) {
