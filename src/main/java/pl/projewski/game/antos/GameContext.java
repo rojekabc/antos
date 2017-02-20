@@ -97,7 +97,7 @@ public class GameContext {
 			}
 			moveCreature(player, dx, dy);
 		} finally {
-			nextTure();
+			nextTurn();
 		}
 	}
 
@@ -130,26 +130,17 @@ public class GameContext {
 		return gameEngine.getWorld();
 	}
 
-	public void nextTure() {
-		log.debug("nextTure");
+	public Random getRandom() {
+		return random;
+	}
+
+	public void nextTurn() {
+		log.debug("nextTurn");
 		// move all mobs
 		final Collection<Creature> mobs = getMobs();
-		final Random random = new Random();
 		for (final Creature creature : mobs) {
-			final int move = random.nextInt(4);
-			switch (move) {
-			case 0:
-				moveCreature(creature, -1, 0);
-				break;
-			case 1:
-				moveCreature(creature, 1, 0);
-				break;
-			case 2:
-				moveCreature(creature, 0, -1);
-				break;
-			case 3:
-				moveCreature(creature, 0, 1);
-				break;
+			if (creature.creatureSI != null) {
+				creature.creatureSI.creatureNextTurn(this, creature);
 			}
 		}
 	}

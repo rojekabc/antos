@@ -23,33 +23,15 @@ import pl.projewski.game.antos.util.GsonEnumAdapterFactory;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
+@Getter
+@Setter
 public class GameConfiguration {
-	@Getter
-	@Setter
 	String language = "pl";
-
-	@Getter
-	@Setter
 	String playerCreatureName = ECreature.PLAYER.name();
-
-	@Getter
-	@Setter
 	boolean paintGridLines = false;
-
-	@Getter
-	@Setter
 	boolean moveSlide = true;
-
-	@Getter
-	@Setter
 	String backgroundImage = null;
-
-	@Getter
-	@Setter
 	private List<ECreature> creatures = Arrays.asList(ECreature.values());
-
-	@Getter
-	@Setter
 	private List<EBlock> blocks = Arrays.asList(EBlock.values());
 
 	private static GameConfiguration instance;
