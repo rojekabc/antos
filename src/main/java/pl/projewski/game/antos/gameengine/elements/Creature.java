@@ -7,7 +7,8 @@ package pl.projewski.game.antos.gameengine.elements;
 
 import pl.projewski.game.antos.AntosResources;
 import pl.projewski.game.antos.configuration.ECreature;
-import pl.projewski.game.antos.gameengine.sialg.CreatureSIFactory;
+import pl.projewski.game.antos.gameengine.exceptions.CreateCreatureSIAlgorithmException;
+import pl.projewski.game.antos.gameengine.sialg.ECreatureSI;
 import pl.projewski.game.antos.gameengine.sialg.ICreatureSIAlgorithm;
 
 /**
@@ -25,7 +26,13 @@ public class Creature extends Element {
 		this.currentHealth = creatureType.getHp();
 		final String creatureSIName = creatureType.getCreatureSI();
 		if (creatureSIName != null) {
-			creatureSI = CreatureSIFactory.getCreatureSI(creatureSIName.toUpperCase());
+			try {
+				creatureSI = ECreatureSI.valueOf(creatureSIName.toUpperCase()).createSIAlgorithm();
+			} catch (final InstantiationException e) {
+				throw new CreateCreatureSIAlgorithmException(e);
+			} catch (final IllegalAccessException e) {
+				throw new CreateCreatureSIAlgorithmException(e);
+			}
 		}
 	}
 

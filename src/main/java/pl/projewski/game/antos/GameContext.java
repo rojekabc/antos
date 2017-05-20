@@ -58,11 +58,12 @@ public class GameContext {
 		final Creature collisionCreature = getWorld().get(Creature.class, newx, newy);
 		if (collisionCreature != null) {
 			final Creature player = gameEngine.getPlayer();
+			final int attackHP = creature.type.getMinAttack()
+			        + (creature.type.getRndAttack() > 0 ? random.nextInt(creature.type.getRndAttack()) : 0);
 			if (creature == player) {
 				// player attack MOB
-				final int attackHP = -2 - random.nextInt(3);
-				gameGraphic.changeCreatureHealth(collisionCreature, attackHP);
-				changeCreatureHealth(collisionCreature, attackHP);
+				gameGraphic.changeCreatureHealth(collisionCreature, -attackHP);
+				changeCreatureHealth(collisionCreature, -attackHP);
 				if (collisionCreature.currentHealth <= 0) {
 					// kill mob, get health
 					gameGraphic.changeCreatureHealth(player, 3);
@@ -71,8 +72,8 @@ public class GameContext {
 				return;
 			} else if (collisionCreature == player) {
 				// MOB attack player
-				gameGraphic.changeCreatureHealth(player, -1);
-				changeCreatureHealth(player, -1);
+				gameGraphic.changeCreatureHealth(player, -attackHP);
+				changeCreatureHealth(player, -attackHP);
 				return;
 			} else {
 				// MOB try to move on another MOB place

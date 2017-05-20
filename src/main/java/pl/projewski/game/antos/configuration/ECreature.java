@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 public enum ECreature {
-	PLAYER, GHOST;
+	PLAYER, GHOST, SNOWMAN, SLIME;
 
 	@Setter
 	private int hp;

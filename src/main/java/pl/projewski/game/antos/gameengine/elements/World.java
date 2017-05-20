@@ -104,7 +104,9 @@ public class World {
 				y = randomizer.nextInt(AntosProperties.GRID_HEIGHT);
 			} while (isAnyCollision(x, y));
 
-			final Creature mob = new Creature(ECreature.GHOST, x, y);
+			// random mob type (omit player)
+			final int mobSelect = randomizer.nextInt(ECreature.values().length - 1);
+			final Creature mob = new Creature(ECreature.values()[mobSelect + 1], x, y);
 			putElement(mob);
 			mobs.add(mob);
 		}
