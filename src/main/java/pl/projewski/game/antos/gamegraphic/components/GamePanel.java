@@ -59,10 +59,10 @@ class GamePanel extends JPanel implements KeyListener {
 	@Override
 	public void paint(final Graphics g) {
 		super.paint(g); // To change body of generated methods, choose Tools |
-						// Templates.
+		                // Templates.
 		// paint image background
 		final BufferedImage background = AntosResources.getInstance()
-				.loadImage(GameConfiguration.getInstance().getBackgroundImage());
+		        .loadImage(GameConfiguration.getInstance().getBackgroundImage());
 
 		if (background != null) {
 			g.drawImage(background, 0, 0, this);
@@ -79,11 +79,11 @@ class GamePanel extends JPanel implements KeyListener {
 			g.setColor(Color.lightGray);
 			for (int i = 0; i <= AntosProperties.GRID_WIDTH; i++) {
 				g.drawLine(i * AntosProperties.CELL_WIDTH, 0, i * AntosProperties.CELL_WIDTH,
-						AntosProperties.GAMEPANEL_HEIGHT);
+				        AntosProperties.GAMEPANEL_HEIGHT);
 			}
 			for (int j = 0; j <= AntosProperties.GRID_HEIGHT; j++) {
 				g.drawLine(0, j * AntosProperties.CELL_HEIGHT, AntosProperties.GAMEPANEL_WIDTH,
-						j * AntosProperties.CELL_HEIGHT);
+				        j * AntosProperties.CELL_HEIGHT);
 			}
 		}
 		// paint health bar
@@ -112,6 +112,10 @@ class GamePanel extends JPanel implements KeyListener {
 		}
 		keyPressed++;
 		keyLast = kc;
+		if (!context.canPlayerTakeCommand()) {
+			log.info("Cannot take action right now");
+			return;
+		}
 		switch (kc) {
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_W:

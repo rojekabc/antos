@@ -89,8 +89,17 @@ public class GameGraphic implements IGameGraphic {
 		registerGraphicAction(new DieCreatureAction(this, creature, world));
 	}
 
+	@Override
 	public void changeCreatureHealth(final Creature creature, final int healthChange) {
 		registerGraphicAction(new HealthChangeAction(this, creature, healthChange));
+	}
+
+	@Override
+	public boolean hasGraphicAction(Creature creature) {
+		synchronized (graphicActionsMap) {
+			return !graphicActionsMap.isEmpty() && graphicActionsMap.get(creature) != null
+			        && !graphicActionsMap.get(creature).isEmpty();
+		}
 	}
 
 	private void registerGraphicAction(final CreatureActionAbstract action) {

@@ -33,4 +33,6 @@ public interface IGameGraphic {
 
 	void changeCreatureHealth(final Creature creature, final int healthChange);
 
+	boolean hasGraphicAction(Creature creature);
+
 }

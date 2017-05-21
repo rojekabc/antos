@@ -102,6 +102,17 @@ public class GameContext {
 		}
 	}
 
+	/**
+	 * Check that player creature doesn't do any action right now and can take
+	 * new command, which should do from now.
+	 * 
+	 * @return
+	 */
+	public boolean canPlayerTakeCommand() {
+		final Creature player = gameEngine.getPlayer();
+		return !gameGraphic.hasGraphicAction(player);
+	}
+
 	public void changeCreatureHealth(final Creature creature, int dh) {
 		if (creature.currentHealth + dh > creature.type.getHp()) {
 			dh = creature.type.getHp() - creature.currentHealth;
