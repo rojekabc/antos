@@ -113,7 +113,7 @@ class GamePanel extends JPanel implements KeyListener {
 		keyPressed++;
 		keyLast = kc;
 		if (!context.canPlayerTakeCommand()) {
-			log.info("Cannot take action right now");
+			log.debug("Cannot take key action right now. Player has a command action.");
 			return;
 		}
 		switch (kc) {

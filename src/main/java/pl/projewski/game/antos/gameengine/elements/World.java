@@ -107,7 +107,7 @@ public class World {
 				String creatureName = creatureAmmount.getCreature();
 				// calculate number of MOBs to put
 				final int numOfMobs = creatureAmmount.getMinAmmount() + (creatureAmmount.getRandAmmount() == 0 ? 0
-				        : randomizer.nextInt(creatureAmmount.getRandAmmount()));
+				        : randomizer.nextInt(creatureAmmount.getRandAmmount() + 1));
 				List<ECreature> possibleCreatures = new ArrayList<>();
 				// find list of possible creatures for this filter
 				for (ECreature creature : creatures) {
