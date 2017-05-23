@@ -8,12 +8,15 @@ package pl.projewski.game.antos.gameengine.elements;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.AntosResources;
+import pl.projewski.game.antos.configuration.CreatureAmmount;
 import pl.projewski.game.antos.configuration.EBlock;
 import pl.projewski.game.antos.configuration.ECreature;
+import pl.projewski.game.antos.configuration.GameConfiguration;
 
 /**
  *
@@ -95,21 +98,45 @@ public class World {
 		player = new Player(1, 1);
 		putElement(player);
 		// put mobs
-		final int numOfMobs = randomizer.nextInt(AntosProperties.MAX_ADD_MOB_AMMOUT) + AntosProperties.MIN_MOB_AMMOUNT;
 		mobs = new ArrayList<>();
-		for (int i = 0; i < numOfMobs; i++) {
-			int x, y;
-			do {
-				x = randomizer.nextInt(AntosProperties.GRID_WIDTH);
-				y = randomizer.nextInt(AntosProperties.GRID_HEIGHT);
-			} while (isAnyCollision(x, y));
-
-			// random mob type (omit player)
-			final int mobSelect = randomizer.nextInt(ECreature.values().length - 1);
-			final Creature mob = new Creature(ECreature.values()[mobSelect + 1], x, y);
-			putElement(mob);
-			mobs.add(mob);
+		List<CreatureAmmount> creatureAmmountList = GameConfiguration.getInstance().getCreatureAmmount();
+		if (creatureAmmountList != null && !creatureAmmountList.isEmpty()) {
+			ECreature[] creatures = ECreature.values();
+			for (CreatureAmmount creatureAmmount : creatureAmmountList) {
+				// get creature name filter
+				String creatureName = creatureAmmount.getCreature();
+				// calculate number of MOBs to put
+				final int numOfMobs = creatureAmmount.getMinAmmount() + (creatureAmmount.getRandAmmount() == 0 ? 0
+				        : randomizer.nextInt(creatureAmmount.getRandAmmount()));
+				List<ECreature> possibleCreatures = new ArrayList<>();
+				// find list of possible creatures for this filter
+				for (ECreature creature : creatures) {
+					if (creature == ECreature.PLAYER) {
+						continue;
+					}
+					if (creature.name().matches(creatureName)) {
+						possibleCreatures.add(creature);
+					}
+				}
+				if (possibleCreatures.isEmpty() || numOfMobs == 0) {
+					continue;
+				}
+				for (int i = 0; i < numOfMobs; i++) {
+					// random position
+					int x, y;
+					do {
+						x = randomizer.nextInt(AntosProperties.GRID_WIDTH);
+						y = randomizer.nextInt(AntosProperties.GRID_HEIGHT);
+					} while (isAnyCollision(x, y));
+					// random mob type
+					final int mobSelect = randomizer.nextInt(possibleCreatures.size());
+					// create and put a mob
+					final Creature mob = new Creature(possibleCreatures.get(mobSelect), x, y);
+					putElement(mob);
+					mobs.add(mob);
+				}
+			}
+			// ctx.registerListener(player);
 		}
-		// ctx.registerListener(player);
 	}
 }

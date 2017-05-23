@@ -59,7 +59,7 @@ public class GameContext {
 		if (collisionCreature != null) {
 			final Creature player = gameEngine.getPlayer();
 			final int attackHP = creature.type.getMinAttack()
-			        + (creature.type.getRndAttack() > 0 ? random.nextInt(creature.type.getRndAttack()) : 0);
+			        + (creature.type.getRndAttack() > 0 ? random.nextInt(creature.type.getRndAttack() + 1) : 0);
 			if (creature == player) {
 				// player attack MOB
 				gameGraphic.changeCreatureHealth(collisionCreature, -attackHP);
