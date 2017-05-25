@@ -34,6 +34,7 @@ public class GameConfiguration {
 	private List<ECreature> creatures = Arrays.asList(ECreature.values());
 	private List<EBlock> blocks = Arrays.asList(EBlock.values());
 	private List<CreatureAmmount> creatureAmmount = Arrays.asList(new CreatureAmmount(".*", 5, 10));
+	private String startMaze = "RoundedMaze";
 
 	private static GameConfiguration instance;
 

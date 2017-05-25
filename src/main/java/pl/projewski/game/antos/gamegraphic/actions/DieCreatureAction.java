@@ -27,18 +27,18 @@ public class DieCreatureAction extends CreatureActionAbstract {
 
 	@Override
 	public boolean doStep(final Graphics graphics) {
-		log.info("graphic - Creature die");
+		log.debug("graphic - Creature die");
 		// remove from world
 		world.removeElement(creature);
 
 		final int panelx = creature.x * AntosProperties.CELL_WIDTH;
 		final int panely = creature.y * AntosProperties.CELL_HEIGHT;
 		final BufferedImage background = AntosResources.getInstance()
-				.loadImage(GameConfiguration.getInstance().getBackgroundImage());
+		        .loadImage(GameConfiguration.getInstance().getBackgroundImage());
 		if (background != null) {
 			try {
 				final BufferedImage backImage = background.getSubimage(panelx, panely, AntosProperties.CELL_WIDTH,
-						AntosProperties.CELL_HEIGHT);
+				        AntosProperties.CELL_HEIGHT);
 				graphics.drawImage(backImage, panelx, panely, null);
 			} catch (final RasterFormatException e) {
 				// TODO: Change to more check, before take image
@@ -61,7 +61,7 @@ public class DieCreatureAction extends CreatureActionAbstract {
 			// image of RIP
 			creature.image = AntosResources.getInstance().loadImage(ripBlock.getImageResource());
 			world.putElement(new Element(creature.x, creature.y,
-					AntosResources.getInstance().loadImage(ripBlock.getImageResource())));
+			        AntosResources.getInstance().loadImage(ripBlock.getImageResource())));
 			graphics.drawImage(creature.image, panelx, panely, null);
 		}
 

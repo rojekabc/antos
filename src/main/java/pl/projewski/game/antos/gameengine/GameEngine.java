@@ -30,7 +30,7 @@ class GameEngine implements IGameEngine {
 
 	@Override
 	public Collection<Creature> getMobs() {
-		return world.mobs;
+		return world.getMobs();
 	}
 
 	@Override
