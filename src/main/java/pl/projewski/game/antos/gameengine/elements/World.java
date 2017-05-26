@@ -8,8 +8,10 @@ package pl.projewski.game.antos.gameengine.elements;
 import java.util.Collection;
 import java.util.Random;
 
+import pl.projewski.game.antos.configuration.GameConfiguration;
+import pl.projewski.game.antos.gameengine.exceptions.CannotCreateMazeInstanceException;
+import pl.projewski.game.antos.gameengine.maze.EMaze;
 import pl.projewski.game.antos.gameengine.maze.IMaze;
-import pl.projewski.game.antos.gameengine.maze.RoundedMaze;
 
 /**
  *
@@ -19,7 +21,7 @@ public class World implements IMaze {
 
 	public Player player;
 	public IMaze currentMaze;
-	private final static Random randomizer = new Random();
+	private Random randomizer = new Random();
 
 	@Override
 	public final Element getElement(final int x, final int y) {
@@ -57,10 +59,7 @@ public class World implements IMaze {
 	}
 
 	public World() {
-		player = new Player(1, 1);
-		// TODO: Generate
-		currentMaze = new RoundedMaze(randomizer.nextInt());
-		currentMaze.putPlayer(player);
+		init(System.currentTimeMillis());
 	}
 
 	@Override
@@ -75,5 +74,22 @@ public class World implements IMaze {
 	@Override
 	public Collection<Creature> getMobs() {
 		return currentMaze.getMobs();
+	}
+
+	@Override
+	public void init(long randomSeed) {
+		// random engine
+		randomizer = new Random(randomSeed);
+		// player
+		player = new Player(1, 1);
+		// current maze (location)
+		String startMaze = GameConfiguration.getInstance().getStartMaze();
+		try {
+			currentMaze = EMaze.getMazeFromName(startMaze);
+			currentMaze.init(randomizer.nextLong());
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+			throw new CannotCreateMazeInstanceException(e);
+		}
+		currentMaze.putPlayer(player);
 	}
 }

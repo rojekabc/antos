@@ -10,6 +10,9 @@ public enum EMaze {
 	}
 
 	public static IMaze getMazeFromName(String name) throws InstantiationException, IllegalAccessException {
+		if (name == null) {
+			throw new IllegalArgumentException(name);
+		}
 		EMaze[] values = values();
 		Class<?> clazz = null;
 		for (EMaze eMaze : values) {
@@ -17,6 +20,9 @@ public enum EMaze {
 				clazz = eMaze.clazz;
 				break;
 			}
+		}
+		if (clazz == null) {
+			throw new IllegalArgumentException(name);
 		}
 		return (IMaze) clazz.newInstance();
 	}

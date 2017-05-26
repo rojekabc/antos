@@ -7,7 +7,7 @@ import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.Player;
 
 public interface IMaze {
-	public Element getElement(final int x, final int y);
+	Element getElement(final int x, final int y);
 
 	<T extends Element> T get(final Class<T> c, final int x, final int y);
 
@@ -26,4 +26,6 @@ public interface IMaze {
 	void removeMob(Creature creature);
 
 	Collection<Creature> getMobs();
+
+	void init(long seed);
 }

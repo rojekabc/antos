@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.NoArgsConstructor;
 import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.AntosResources;
 import pl.projewski.game.antos.configuration.CreatureAmmount;
@@ -14,6 +15,7 @@ import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.Player;
 
+@NoArgsConstructor
 public class RoundedMaze extends AbstractMaze {
 
 	public RoundedMaze(int randomSeed) {

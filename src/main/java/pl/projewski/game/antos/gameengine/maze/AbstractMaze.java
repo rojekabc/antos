@@ -4,17 +4,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
+import lombok.NoArgsConstructor;
 import pl.projewski.game.antos.AntosProperties;
 import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.Player;
 
+@NoArgsConstructor
 public abstract class AbstractMaze implements IMaze {
 	public Player player;
-	private final Element[] map;
+	private Element[] map;
 	public Collection<Creature> mobs;
-	private int randomSeed;
+	private long randomSeed;
 	private Random random;
+
+	@Override
+	public void init(long randomSeed) {
+		// create map object
+		map = new Element[AntosProperties.GRID_WIDTH * AntosProperties.GRID_HEIGHT];
+		mobs = new ArrayList<>();
+		this.randomSeed = randomSeed;
+		random = new Random(randomSeed);
+		createMap();
+		putMobs();
+	}
 
 	@Override
 	public Element getElement(final int x, final int y) {
@@ -88,14 +101,8 @@ public abstract class AbstractMaze implements IMaze {
 		mobs.remove(creature);
 	}
 
-	public AbstractMaze(int randomSeed) {
-		// create map object
-		map = new Element[AntosProperties.GRID_WIDTH * AntosProperties.GRID_HEIGHT];
-		mobs = new ArrayList<>();
-		this.randomSeed = randomSeed;
-		random = new Random(randomSeed);
-		createMap();
-		putMobs();
+	protected AbstractMaze(int randomSeed) {
+		init(randomSeed);
 	}
 
 	public abstract void createMap();
