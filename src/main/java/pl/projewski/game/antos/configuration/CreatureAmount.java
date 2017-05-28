@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CreatureAmmount {
+public class CreatureAmount {
+	private String name;
 	private String creature;
-	private int minAmmount;
-	private int randAmmount;
+	private int minAmount;
+	private int randAmount;
 }

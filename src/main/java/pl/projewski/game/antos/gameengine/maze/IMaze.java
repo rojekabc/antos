@@ -2,6 +2,7 @@ package pl.projewski.game.antos.gameengine.maze;
 
 import java.util.Collection;
 
+import pl.projewski.game.antos.configuration.CreatureAmount;
 import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.Player;
@@ -28,4 +29,6 @@ public interface IMaze {
 	Collection<Creature> getMobs();
 
 	void init(long seed);
+
+	void putMobs(CreatureAmount creatureAmount);
 }

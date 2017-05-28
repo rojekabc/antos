@@ -6,9 +6,13 @@
 package pl.projewski.game.antos.gameengine.elements;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
+import lombok.extern.slf4j.Slf4j;
+import pl.projewski.game.antos.configuration.CreatureAmount;
 import pl.projewski.game.antos.configuration.GameConfiguration;
+import pl.projewski.game.antos.configuration.MazeConfiguration;
 import pl.projewski.game.antos.gameengine.exceptions.CannotCreateMazeInstanceException;
 import pl.projewski.game.antos.gameengine.maze.EMaze;
 import pl.projewski.game.antos.gameengine.maze.IMaze;
@@ -17,6 +21,7 @@ import pl.projewski.game.antos.gameengine.maze.IMaze;
  *
  * @author WRO00541
  */
+@Slf4j
 public class World implements IMaze {
 
 	public Player player;
@@ -83,13 +88,29 @@ public class World implements IMaze {
 		// player
 		player = new Player(1, 1);
 		// current maze (location)
-		String startMaze = GameConfiguration.getInstance().getStartMaze();
+		GameConfiguration configuration = GameConfiguration.getInstance();
+		String startMaze = configuration.getStartMaze();
+		log.info("Loading maze: " + startMaze);
 		try {
-			currentMaze = EMaze.getMazeFromName(startMaze);
+			MazeConfiguration mazeConfiguration = configuration.getMazeConfiguration(startMaze);
+			currentMaze = EMaze.getMazeFromName(mazeConfiguration.getType());
+			log.info("Maze type: " + mazeConfiguration.getType());
 			currentMaze.init(randomizer.nextLong());
+			List<String> mobs = mazeConfiguration.getMobs();
+			for (String mobConfigurationName : mobs) {
+				log.info("Loading mob's configuration: " + mobConfigurationName);
+				CreatureAmount creatureAmmount = configuration.getCreatureAmmount(mobConfigurationName);
+				currentMaze.putMobs(creatureAmmount);
+			}
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
 			throw new CannotCreateMazeInstanceException(e);
 		}
 		currentMaze.putPlayer(player);
+	}
+
+	@Override
+	public void putMobs(CreatureAmount creatureAmount) {
+		// TODO Auto-generated method stub
+
 	}
 }

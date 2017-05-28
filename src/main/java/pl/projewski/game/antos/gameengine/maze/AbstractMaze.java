@@ -2,15 +2,20 @@ package pl.projewski.game.antos.gameengine.maze;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.projewski.game.antos.AntosProperties;
+import pl.projewski.game.antos.configuration.CreatureAmount;
+import pl.projewski.game.antos.configuration.ECreature;
 import pl.projewski.game.antos.gameengine.elements.Creature;
 import pl.projewski.game.antos.gameengine.elements.Element;
 import pl.projewski.game.antos.gameengine.elements.Player;
 
 @NoArgsConstructor
+@Slf4j
 public abstract class AbstractMaze implements IMaze {
 	public Player player;
 	private Element[] map;
@@ -26,7 +31,6 @@ public abstract class AbstractMaze implements IMaze {
 		this.randomSeed = randomSeed;
 		random = new Random(randomSeed);
 		createMap();
-		putMobs();
 	}
 
 	@Override
@@ -107,10 +111,48 @@ public abstract class AbstractMaze implements IMaze {
 
 	public abstract void createMap();
 
-	public abstract void putMobs();
-
 	@Override
 	public Collection<Creature> getMobs() {
 		return mobs;
 	}
+
+	@Override
+	public void putMobs(CreatureAmount creatureAmount) {
+		ECreature[] creatures = ECreature.values();
+		// get creature name filter
+		String creatureName = creatureAmount.getCreature();
+		// calculate number of MOBs to put
+		final int numOfMobs = creatureAmount.getMinAmount() + randomIntWithBound(creatureAmount.getRandAmount());
+		log.info("Number of MOBs: " + numOfMobs + "(min=" + creatureAmount.getMinAmount() + ", rand="
+		        + creatureAmount.getRandAmount() + ")");
+		List<ECreature> possibleCreatures = new ArrayList<>();
+		// find list of possible creatures for this filter
+		for (ECreature creature : creatures) {
+			if (creature == ECreature.PLAYER) {
+				continue;
+			}
+			if (creature.name().matches(creatureName)) {
+				possibleCreatures.add(creature);
+			}
+		}
+		if (possibleCreatures.isEmpty() || numOfMobs == 0) {
+			return;
+		}
+		for (int i = 0; i < numOfMobs; i++) {
+			// random position
+			int x, y;
+			do {
+				x = randomInt(AntosProperties.GRID_WIDTH);
+				y = randomInt(AntosProperties.GRID_HEIGHT);
+			} while (isAnyCollision(x, y));
+			// random mob type
+			final int mobSelect = randomInt(possibleCreatures.size());
+			// create and put a mob
+			final Creature mob = new Creature(possibleCreatures.get(mobSelect), x, y);
+			putElement(mob);
+			mobs.add(mob);
+		}
+		// ctx.registerListener(player);
+	}
+
 }
