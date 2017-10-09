@@ -122,14 +122,14 @@ public class GameContext {
 		if (creature == player) {
 			// healh bar graphic
 			gameGraphic.updateHealth();
-			log.info("Player get " + dh + " HP");
+			log.debug("Player get " + dh + " HP");
 		} else {
-			log.info("MOB get " + dh + " HP");
+			log.debug("MOB get " + dh + " HP");
 		}
 		// die
 		if (creature.currentHealth <= 0) {
 			// die graphic
-			getWorld().mobs.remove(creature);
+			getWorld().removeMob(creature);
 			gameGraphic.creatureDie(creature, getWorld());
 		}
 	}

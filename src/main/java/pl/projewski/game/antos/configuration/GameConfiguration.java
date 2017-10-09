@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import pl.projewski.game.antos.AntosUtil;
+import pl.projewski.game.antos.gameengine.exceptions.CreatureAmountNotFoundException;
+import pl.projewski.game.antos.gameengine.exceptions.MazeCofigurationNotFoundException;
 import pl.projewski.game.antos.util.GsonEnumAdapterFactory;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -33,7 +35,10 @@ public class GameConfiguration {
 	String backgroundImage = null;
 	private List<ECreature> creatures = Arrays.asList(ECreature.values());
 	private List<EBlock> blocks = Arrays.asList(EBlock.values());
-	private List<CreatureAmmount> creatureAmmount = Arrays.asList(new CreatureAmmount(".*", 5, 10));
+	private List<CreatureAmount> creatureAmountList = Arrays
+	        .asList(new CreatureAmount("all-hands-on-the-board", ".*", 5, 10));
+	private String startMaze = "RoundedMaze";
+	private List<MazeConfiguration> mazeConfigurationList = null;
 
 	private static GameConfiguration instance;
 
@@ -48,6 +53,24 @@ public class GameConfiguration {
 			}
 		}
 		return instance;
+	}
+
+	public CreatureAmount getCreatureAmmount(String name) {
+		for (CreatureAmount creatureAmmount : creatureAmountList) {
+			if (creatureAmmount.getName().equals(name)) {
+				return creatureAmmount;
+			}
+		}
+		throw new CreatureAmountNotFoundException(name);
+	}
+
+	public MazeConfiguration getMazeConfiguration(String name) {
+		for (MazeConfiguration mazeConfiguration : mazeConfigurationList) {
+			if (mazeConfiguration.getName().equals(name)) {
+				return mazeConfiguration;
+			}
+		}
+		throw new MazeCofigurationNotFoundException(name);
 	}
 
 	public static void main(final String[] args) throws JsonIOException, IOException {
