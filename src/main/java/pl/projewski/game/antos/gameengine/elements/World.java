@@ -96,16 +96,18 @@ public class World implements IMaze {
 			currentMaze = EMaze.getMazeFromName(mazeConfiguration.getType());
 			log.info("Maze type: " + mazeConfiguration.getType());
 			currentMaze.init(randomizer.nextLong());
+			currentMaze.putPlayer(player);
 			List<String> mobs = mazeConfiguration.getMobs();
-			for (String mobConfigurationName : mobs) {
-				log.info("Loading mob's configuration: " + mobConfigurationName);
-				CreatureAmount creatureAmmount = configuration.getCreatureAmmount(mobConfigurationName);
-				currentMaze.putMobs(creatureAmmount);
+			if (mobs != null) {
+				for (String mobConfigurationName : mobs) {
+					log.info("Loading mob's configuration: " + mobConfigurationName);
+					CreatureAmount creatureAmmount = configuration.getCreatureAmmount(mobConfigurationName);
+					currentMaze.putMobs(creatureAmmount);
+				}
 			}
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
 			throw new CannotCreateMazeInstanceException(e);
 		}
-		currentMaze.putPlayer(player);
 	}
 
 	@Override

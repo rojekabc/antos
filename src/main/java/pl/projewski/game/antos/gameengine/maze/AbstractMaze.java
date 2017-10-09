@@ -24,7 +24,7 @@ public abstract class AbstractMaze implements IMaze {
 	private Random random;
 
 	@Override
-	public void init(long randomSeed) {
+	public void init(final long randomSeed) {
 		// create map object
 		map = new Element[AntosProperties.GRID_WIDTH * AntosProperties.GRID_HEIGHT];
 		mobs = new ArrayList<>();
@@ -92,20 +92,24 @@ public abstract class AbstractMaze implements IMaze {
 		set(e, e.x, e.y);
 	}
 
-	protected int randomInt(int bound) {
+	protected int randomInt(final int bound) {
 		return bound != 0 ? random.nextInt(bound) : 0;
 	}
 
-	protected int randomIntWithBound(int bound) {
+	protected int randomIntWithBound(final int bound) {
 		return random.nextInt(bound + 1);
 	}
 
+	protected long randomLong() {
+		return random.nextLong();
+	}
+
 	@Override
-	public void removeMob(Creature creature) {
+	public void removeMob(final Creature creature) {
 		mobs.remove(creature);
 	}
 
-	protected AbstractMaze(int randomSeed) {
+	protected AbstractMaze(final int randomSeed) {
 		init(randomSeed);
 	}
 
@@ -117,17 +121,19 @@ public abstract class AbstractMaze implements IMaze {
 	}
 
 	@Override
-	public void putMobs(CreatureAmount creatureAmount) {
-		ECreature[] creatures = ECreature.values();
+	public void putMobs(final CreatureAmount creatureAmount) {
+		final ECreature[] creatures = ECreature.values();
 		// get creature name filter
-		String creatureName = creatureAmount.getCreature();
+		final String creatureName = creatureAmount.getCreature();
 		// calculate number of MOBs to put
 		final int numOfMobs = creatureAmount.getMinAmount() + randomIntWithBound(creatureAmount.getRandAmount());
-		log.info("Number of MOBs: " + numOfMobs + "(min=" + creatureAmount.getMinAmount() + ", rand="
-		        + creatureAmount.getRandAmount() + ")");
-		List<ECreature> possibleCreatures = new ArrayList<>();
+		if (log.isDebugEnabled()) {
+			log.debug("Number of MOBs: " + numOfMobs + "(min=" + creatureAmount.getMinAmount() + ", rand="
+			        + creatureAmount.getRandAmount() + ")");
+		}
+		final List<ECreature> possibleCreatures = new ArrayList<>();
 		// find list of possible creatures for this filter
-		for (ECreature creature : creatures) {
+		for (final ECreature creature : creatures) {
 			if (creature == ECreature.PLAYER) {
 				continue;
 			}
